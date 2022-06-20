@@ -1,0 +1,19 @@
+apiVersion: s3.hanse-merkur.de/v1alpha1
+kind: AccessKey
+metadata:
+  name: operator-test
+spec:
+  owner: operator-test
+  description: Access key for operator-test
+  secretName: operator-test
+  # template:
+  #   metadata:
+  #     labels:
+  #       hansemerkur.de/owned-by: some-group
+  #     annotations:
+  #       hansemerkur.de/cleanup: none
+  #   data:
+  #     credentials: |
+  #       [default]
+  #       aws_secret_key_id={{ data.aws_access_key_id }}
+  #       aws_secret_access_key={{ data.aws_secret_access_key }}

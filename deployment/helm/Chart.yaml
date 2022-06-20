@@ -1,0 +1,6 @@
+apiVersion: v2
+name: rgwoperator
+description: Automatic S3 user and bucket deployment for RadosGW
+type: application
+version: 0.1.2
+appVersion: 0.1.7

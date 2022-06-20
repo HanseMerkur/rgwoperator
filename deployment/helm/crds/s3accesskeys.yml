@@ -1,0 +1,78 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: accesskeys.s3.hanse-merkur.de
+spec:
+  scope: Namespaced
+  group: s3.hanse-merkur.de
+  names:
+    kind: AccessKey
+    plural: accesskeys
+    singular: accesskey
+    categories:
+      - rgw
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - owner
+                - secretName
+              properties:
+                owner:
+                  type: string
+                  description: Owner of the access key
+                description:
+                  type: string
+                  description: Usage description of the access key
+                  default: ""
+                secretName:
+                  type: string
+                  description: Kubernetes secret in which the access and secret keys will be stored
+                template:
+                  type: object
+                  description: Optional template for extra fields in the generated secret
+                  properties:
+                    metadata:
+                      type: object
+                      properties:
+                        annotations:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                        labels:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                    data:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+
+            status:
+              type: object
+              properties:
+                ready:
+                  type: boolean
+                  default: false
+                accessKeyId:
+                  type: string
+      additionalPrinterColumns:
+        - name: AccessKey
+          type: string
+          description: Access Key Id
+          jsonPath: .status.accessKeyId
+        - name: Owner
+          type: string
+          description: The Access Key owner
+          jsonPath: .spec.owner
+        - name: Ready
+          type: boolean
+          description: Status of the Bucket
+          jsonPath: .status.ready
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

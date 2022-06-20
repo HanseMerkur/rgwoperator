@@ -1,0 +1,6 @@
+--extra-index-url https://gitpro.hanse-merkur.de/api/v4/projects/6644/packages/pypi/simple
+aiorgwadmin==1.0.0
+kopf==1.35.4
+pykube-ng==22.1.1
+boto3==1.18.1
+Jinja2==3.0.1

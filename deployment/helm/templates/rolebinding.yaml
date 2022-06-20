@@ -1,0 +1,58 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "rgwoperator.fullname" . }}
+  labels:
+    {{- include "rgwoperator.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+rules:
+  # Framework: knowing which other operators are running (i.e. peering).
+  - apiGroups: [kopf.dev]
+    resources: [clusterkopfpeerings]
+    verbs: [list, watch, patch, get]
+
+  # Framework: runtime observation of namespaces & CRDs (addition/deletion).
+  - apiGroups: [apiextensions.k8s.io]
+    resources: [customresourcedefinitions]
+    verbs: [list, watch]
+  - apiGroups: [""]
+    resources: [namespaces]
+    verbs: [list, watch]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create, delete, get, list, watch, patch]
+
+  # Application access to operator crds
+  - apiGroups: [s3.hanse-merkur.de]
+    resources: [users, accesskeys, buckets]
+    verbs: ['*']
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [create, delete, get, list, watch, patch]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create, get, list, watch, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "rgwoperator.fullname" . }}
+  labels:
+    {{- include "rgwoperator.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "rgwoperator.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "rgwoperator.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

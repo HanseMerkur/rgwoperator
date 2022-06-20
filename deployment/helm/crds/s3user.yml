@@ -1,0 +1,96 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: users.s3.hanse-merkur.de
+spec:
+  scope: Cluster
+  group: s3.hanse-merkur.de
+  names:
+    kind: User
+    plural: users
+    singular: user
+    categories:
+      - rgw
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - userId
+                - contactName
+              properties:
+                userId:
+                  type: string
+                  description: DNS-valid name for the user on the Rados Gateway
+                contactName:
+                  type: string
+                  description: Contact name or group for this S3Users owner
+                suspended:
+                  type: boolean
+                  description: Suspend access to the user resources
+                quotas:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: Enables the use of quotas on this user
+                      default: false
+                    maxObjects:
+                      type: integer
+                      description: The maximum number of objects that can be stored by the user
+                      default: -1
+                    maxBuckets:
+                      type: integer
+                      description: The maximum number of buckets that can be deployed by the user
+                      default: -1
+                    maxSize:
+                      type: integer
+                      description: The maximum size in kb of objects that can be stored by the user
+                      default: -1
+            status:
+              type: object
+              properties:
+                ready:
+                  type: boolean
+                  default: false
+                buckets:
+                  type: integer
+                  default: -1
+                objects:
+                  type: integer
+                  default: -1
+                sizeInKb:
+                  type: integer
+                  default: -1
+                suspended:
+                  type: boolean
+                  default: false
+      additionalPrinterColumns:
+        - name: Username
+          type: string
+          description: The username on the Radows Gateway
+          jsonPath: .spec.userId
+        - name: Contact Name
+          description: The contact for this S3User
+          jsonPath: .spec.contactName
+          type: string
+        - name: Buckets
+          type: integer
+          description: The number of currently associated buckets for this Username
+          jsonPath: .status.buckets
+        - name: Ready
+          type: boolean
+          description: Status of the Bucket
+          jsonPath: .status.ready
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+        - name: Suspended
+          type: boolean
+          jsonPath: .status.suspended

@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "rgwoperator.fullname" . }}-admin
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    {{- include "rgwoperator.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [s3.hanse-merkur.de]
+    resources: [users, accesskeys, buckets]
+    verbs: ['*']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "rgwoperator.fullname" . }}-view
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+    {{- include "rgwoperator.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [s3.hanse-merkur.de]
+    resources: [users, accesskeys, buckets]
+    verbs: [get, list, watch]

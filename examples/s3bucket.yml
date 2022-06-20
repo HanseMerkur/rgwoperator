@@ -1,0 +1,46 @@
+apiVersion: s3.hanse-merkur.de/v1alpha1
+kind: Bucket
+metadata:
+  name: operator-test
+  annotations:
+    s3.hanse-merkur.de/allow-deletion: "true"
+    s3.hanse-merkur.de/force-deletion: "true"
+    s3.hanse-merkur.de/allow-import: "true"
+spec:
+  bucketName: operator-test
+  ownerAccessKey: operator-test
+  bucketPolicy: private
+
+  objectLock: true
+  objectVersioning: true
+  lifeCyclePolicy: |
+    {
+      "Rules": [
+          {
+              "Filter": {
+                  "Prefix": ""
+              },
+              "Status": "Enabled",
+              "Transitions": [
+                  {
+                      "Days": 1,
+                      "StorageClass": "STANDARD_IA"
+                  }
+              ],
+              "ID": "Pool Migration"
+          }
+      ]
+    }
+  objectLockConfig: |
+    {
+      'Rule': {
+              'DefaultRetention': {
+                  'Mode': 'COMPLIANCE',
+                  'Years': 1
+              }
+          }
+    }
+  quotas:
+    enabled: true
+    maxObjects: 100000
+    maxSize: 102400
