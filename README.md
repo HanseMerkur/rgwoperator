@@ -34,7 +34,6 @@ spec:
   userId: operator-test
   # Free form text field for contact information
   contactName: Operator Test
-  # Der ganze quotas Block ist optional
   # Enable quotas for the user globally. Applied to all buckets
   quotas:
     enabled: true
