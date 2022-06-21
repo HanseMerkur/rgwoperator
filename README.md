@@ -13,9 +13,7 @@ $ radosgw-admin --id admin caps add --caps="buckets=*;users=*;usage=*;metadata=*
 
 ## Ceph User
 
-Neue Nutzer können im RadosGW via folgender CRD angelegt werden
-
-Creating new users which will be used to logicially separate entities.
+New RadosGW users, which will be used to logicially separate entities, can be created via the following CRD:
 
 ```yaml
 apiVersion: s3.hanse-merkur.de/v1alpha1
@@ -42,7 +40,7 @@ spec:
     maxBuckets: 10
 ```
 
-Created Ceph users have to be unique, if using the tenant unique to the operator installaton.
+Created Ceph users have to be unique, if using the tenant unique to the operator installation.
 
 ## Access Keys
 
@@ -80,7 +78,7 @@ spec:
 
 ## Buckets
 
-Buckets are namespaced resources and use the previously AccessKey to create and
+Buckets are namespaced resources and use the implied AccessKey to create and
 update the Bucket in Ceph.
 
 ```yaml
